@@ -147,6 +147,9 @@
       },
       "supervisor_complete_reservation": {
         "enabled": true
+      },
+      "conversation_history": {
+        "enabled": false
       }
     }
   }

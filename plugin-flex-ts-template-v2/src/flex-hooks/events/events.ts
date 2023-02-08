@@ -1,5 +1,6 @@
 import { FlexEvent } from "../../types/manager/FlexEvent";
 // add-feature-script: pluginsLoaded imports
+import ConversationHistoryLoaded from "../../feature-library/conversation-history/flex-hooks/events/pluginsLoaded";
 import ActivityReservationHandlerLoaded from "../../feature-library/activity-reservation-handler/flex-hooks/events/pluginsLoaded";
 import ActivitySkillFilterLoaded from "../../feature-library/activity-skill-filter/flex-hooks/events/pluginsLoaded";
 import CallbackAndVoicemailLoaded from "../../feature-library/callback-and-voicemail/flex-hooks/events/pluginsLoaded";
@@ -56,6 +57,7 @@ const eventHandlers: Record<FlexEvent, ((...args: any[]) => void)[]> = {
     HangUpByLoaded,
     AgentAutomationLoaded,
     SupervisorCompleteReservationLoaded,
+    ConversationHistoryLoaded,
     // add-feature-script: add pluginsLoaded handlers above this line
   ],
   taskAccepted: [

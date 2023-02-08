@@ -1,4 +1,5 @@
 // add-feature-script: type imports
+import ConversationHistoryConfig from "../../feature-library/conversation-history/types/ServiceConfiguration";
 import ActivityReservationHandlerConfig from "../../feature-library/activity-reservation-handler/types/ServiceConfiguration";
 import ActivitySkillFilterConfig from "../../feature-library/activity-skill-filter/types/ServiceConfiguration";
 import CallbackAndVoicemailConfig from "../../feature-library/callback-and-voicemail/types/ServiceConfiguration";
@@ -47,5 +48,6 @@ export default interface FeatureServiceConfiguration {
   hang_up_by: HangUpByConfig;
   agent_automation: AgentAutomationConfig;
   supervisor_complete_reservation: SupervisorCompleteReservation;
+  conversation_history: ConversationHistoryConfig;
   // add-feature-script: add config definitions above this line
 }
