@@ -163,7 +163,7 @@
         "enabled": true,
         "use_paste_search_icon": false,
         "queue": {
-          "enabled": true,
+          "queueEnabled": true,
           "show_only_queues_with_available_workers": true,
           "show_real_time_data": true,
           "enforce_queue_filter_from_worker_object": true,
@@ -173,12 +173,14 @@
         "external_directory": {
           "enabled": false,
           "skipPhoneNumberValidation": false,
-          "directory": [{
-            "cold_transfer_enabled": true,
-            "warm_transfer_enabled": true,
-            "label": "Sample Entry",
-            "number": "+10000000000"
-          }]
+          "directory": [
+            {
+              "cold_transfer_enabled": true,
+              "warm_transfer_enabled": true,
+              "label": "Sample Entry",
+              "number": "+10000000000"
+            }
+          ]
         }
       },
       "dispositions": {
@@ -195,10 +197,7 @@
         "per_queue": {
           "exampleQueueSid": {
             "require_disposition": true,
-            "dispositions": [
-              "Promotional Sale",
-              "Renewal"
-            ]
+            "dispositions": ["Promotional Sale", "Renewal"]
           }
         }
       },
@@ -208,6 +207,12 @@
       "attribute_viewer": {
         "enabled": true,
         "enabled_for_agents": false
+      },
+      "recent_tasks": {
+        "enabled": false
+      },
+      "call_history": {
+        "enabled": false
       }
     }
   }
