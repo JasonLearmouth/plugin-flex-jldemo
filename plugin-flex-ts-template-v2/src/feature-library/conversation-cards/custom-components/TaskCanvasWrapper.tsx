@@ -1,29 +1,42 @@
-import React, { DragEvent, useState } from 'react'
-import { withTaskContext, ITask, Actions } from '@twilio/flex-ui';
-import { Box } from '@twilio-paste/core';
+import React, { DragEvent, useState } from 'react';
+import { withTaskContext, ITask, Actions, Icon } from '@twilio/flex-ui';
+import { Box, Heading, Paragraph } from '@twilio-paste/core';
+import { MMSCapableIcon } from '@twilio-paste/icons/esm/MMSCapableIcon';
 
-type Props = { children: React.ReactNode, task: ITask }
+type Props = { children: React.ReactNode; task: ITask };
 
 const Wrapper = (props: Props) => {
   const { children } = props;
   const conversationSid = props.task?.attributes.conversationSid ?? props.task?.attributes.channelSid;
-
 
   const [isTarget, setIsTarget] = useState(false);
 
   const handleDrop = async (e: DragEvent<HTMLElement>): Promise<void> => {
     e.preventDefault();
     setIsTarget(false);
-    const cardDef = JSON.parse(e.dataTransfer.getData("adaptive-card"));
-    const body = e.dataTransfer.getData("text");
-    console.log('Got a drop:', body, cardDef);
 
-    if (!conversationSid) return;
+    console.log('Got a drop from:', e);
+
+    const cardData = e.dataTransfer.getData('adaptive-card');
+
+    if (cardData) {
+      const cardDef = JSON.parse(cardData);
+      console.log('Got a drop card:', cardDef);
+    }
+
+    const body = e.dataTransfer.getData('text');
+
+    if (body) {
+      const cardDef = JSON.parse(cardData);
+      console.log('Got a drop body:', body);
+    }
+
+    if (!conversationSid || !body) return;
     await Actions.invokeAction('SendMessage', {
       body,
       conversationSid,
     });
-  }
+  };
 
   function handleDragLeave(e: DragEvent<HTMLDivElement>): void {
     e.preventDefault();
@@ -38,40 +51,43 @@ const Wrapper = (props: Props) => {
   }
 
   return (
-    <Box
-      onDrop={handleDrop}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragExit={handleDragLeave}
-      borderColor={"colorBorderSuccessWeak"}
-      borderStyle={isTarget ? "solid" : "none"}
-      borderWidth="borderWidth20"
-      display="flex"
-      position={"relative"}
-      flexGrow={1}
-
-    >
+    <Box onDrop={handleDrop} onDragEnter={handleDragEnter} display="flex" position={'relative'} flexGrow={1}>
       <Box
-        position={"absolute"}
-        zIndex={"zIndex50"}
-        opacity={"0.5"}
-        display={isTarget ? "block" : "none"}
-        width={"100%"}
-        height={"100%"}
-        backgroundColor={"colorBackgroundSuccess"}
-        style={{ pointerEvents: "none" }}>
+        onDragLeave={handleDragLeave}
+        onDragExit={handleDragLeave}
+        display={isTarget ? 'flex' : 'none'}
+        flexDirection={isTarget ? 'column' : undefined}
+        position={'absolute'}
+        top={0}
+        left={0}
+        inset={'8px'}
+        borderColor={'colorBorderPrimary'}
+        borderWidth={'borderWidth30'}
+        borderStyle={'dashed'}
+        borderRadius={'borderRadius20'}
+        zIndex={'zIndex50'}
+        opacity={'0.9'}
+        backgroundColor={'colorBackgroundBody'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          pointerEvents="none"
+          flexDirection={'column'}
+        >
+          <MMSCapableIcon decorative={true} size="sizeIcon90" color="colorTextIcon" />
+          <Heading as="h3" variant="heading30">
+            Send response
+          </Heading>
+          <Paragraph>Drop conversation card or suggested response here</Paragraph>
+        </Box>
       </Box>
-
-      <Box
-        display="flex"
-        position={"relative"}
-        flexGrow={1}
-        style={{ pointerEvents: isTarget ? "none" : "auto" }}>
-        {children}
-      </Box>
-
+      {children}
     </Box>
-  )
-}
+  );
+};
 
 export const TaskCanvasWrapper = withTaskContext(Wrapper);
