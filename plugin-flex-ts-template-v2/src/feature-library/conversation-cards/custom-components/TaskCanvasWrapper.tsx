@@ -6,7 +6,7 @@ type Props = { children: React.ReactNode, task: ITask }
 
 const Wrapper = (props: Props) => {
   const { children } = props;
-  const conversationSid = props.task.attributes.conversationSid ?? props.task.attributes.channelSid;
+  const conversationSid = props.task?.attributes.conversationSid ?? props.task?.attributes.channelSid;
 
 
   const [isTarget, setIsTarget] = useState(false);
@@ -31,7 +31,7 @@ const Wrapper = (props: Props) => {
     setIsTarget(false);
   }
 
-  function handleDragOver(e: DragEvent<HTMLDivElement>): void {
+  function handleDragEnter(e: DragEvent<HTMLDivElement>): void {
     e.preventDefault();
     console.log('Item is now on top, not dropped yet:', e);
     setIsTarget(true);
@@ -40,15 +40,36 @@ const Wrapper = (props: Props) => {
   return (
     <Box
       onDrop={handleDrop}
-      onDragEnter={handleDragOver}
+      onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
-      borderColor={isTarget ? 'colorBorderSuccessWeak' : 'colorBorder'}
-      borderStyle={isTarget ? 'solid' : 'none'}
+      onDragExit={handleDragLeave}
+      borderColor={"colorBorderSuccessWeak"}
+      borderStyle={isTarget ? "solid" : "none"}
       borderWidth="borderWidth20"
-      animation={isTarget ? 'pulse 2s infinite' : 'none'}
       display="flex"
-      flexGrow={1}>
-      {children}
+      position={"relative"}
+      flexGrow={1}
+
+    >
+      <Box
+        position={"absolute"}
+        zIndex={"zIndex50"}
+        opacity={"0.5"}
+        display={isTarget ? "block" : "none"}
+        width={"100%"}
+        height={"100%"}
+        backgroundColor={"colorBackgroundSuccess"}
+        style={{ pointerEvents: "none" }}>
+      </Box>
+
+      <Box
+        display="flex"
+        position={"relative"}
+        flexGrow={1}
+        style={{ pointerEvents: isTarget ? "none" : "auto" }}>
+        {children}
+      </Box>
+
     </Box>
   )
 }

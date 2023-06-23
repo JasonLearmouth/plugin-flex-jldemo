@@ -31,7 +31,7 @@ export const componentHook = function wrapTaskCanvasComponent(flex: typeof Flex,
   flex.TaskCanvas.Content.addWrapper((OriginalComponent) => (originalProps) => {
     return (
       <TaskCanvasWrapper>
-        <OriginalComponent {...originalProps} />
+        <OriginalComponent  {...originalProps} />
       </TaskCanvasWrapper>
     );
   });
