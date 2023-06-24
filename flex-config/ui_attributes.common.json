@@ -227,6 +227,9 @@
       },
       "conversation_cards": {
         "enabled": false
+      },
+      "message_drop_zone": {
+        "enabled": false
       }
     }
   }
