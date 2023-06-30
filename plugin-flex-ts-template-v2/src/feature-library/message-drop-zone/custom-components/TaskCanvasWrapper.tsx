@@ -16,26 +16,28 @@ const Wrapper = (props: Props) => {
     setIsTarget(false);
 
     console.log('Got a drop from:', e);
-
-    const cardData = e.dataTransfer.getData('adaptive-card');
-
-    if (cardData) {
-      const cardDef = JSON.parse(cardData);
-      console.log('Got a drop card:', cardDef);
-    }
-
     const body = e.dataTransfer.getData('text');
-
-    if (body) {
-      const cardDef = JSON.parse(cardData);
-      console.log('Got a drop body:', body);
-    }
-
     if (!conversationSid || !body) return;
-    await Actions.invokeAction('SendMessage', {
-      body,
-      conversationSid,
-    });
+
+    // Get the adaptive card data if it exists
+    const cardDataJson = e.dataTransfer.getData('adaptive-card');
+
+    if (cardDataJson && cardDataJson !== 'undefined') {
+      const cardDef = JSON.parse(cardDataJson);
+      console.log('Got a drop card:', cardDef);
+      await Actions.invokeAction('SendMessage', {
+        body,
+        conversationSid,
+        messageAttributes: {
+          'adaptive-card': cardDataJson,
+        },
+      });
+    } else {
+      await Actions.invokeAction('SendMessage', {
+        body,
+        conversationSid,
+      });
+    }
   };
 
   function handleDragLeave(e: DragEvent<HTMLDivElement>): void {
