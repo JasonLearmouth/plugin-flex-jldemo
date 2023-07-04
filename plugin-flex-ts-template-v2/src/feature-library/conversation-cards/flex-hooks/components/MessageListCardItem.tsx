@@ -1,7 +1,7 @@
 import * as Flex from '@twilio/flex-ui';
 import React from 'react';
 import { FlexComponent } from '../../../../types/feature-loader';
-import AdaptiveCardContainer from '../../custom-components/AdaptiveCardContainer';
+import AdaptiveCardFlexWrapper from '../../custom-components/AdaptiveCardFlexWrapper';
 
 export const componentName = FlexComponent.MessageListItem;
 export const componentHook = function addAdaptiveCardComponent(flex: typeof Flex, _manager: Flex.Manager) {
@@ -15,5 +15,5 @@ export const componentHook = function addAdaptiveCardComponent(flex: typeof Flex
 
   const data = {};
 
-  flex.MessageListItem.Content.add(<AdaptiveCardContainer key="adaptive-card" />, options);
+  flex.MessageListItem.Content.add(<AdaptiveCardFlexWrapper key="adaptive-card" />, options);
 };
