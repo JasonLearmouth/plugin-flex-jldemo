@@ -1,6 +1,7 @@
 import { Tabs, Tab, TabList, TabPanel, Table, TabPanels } from '@twilio-paste/core';
 import { useUID } from '@twilio-paste/core/dist/uid-library';
 import CannedResponsesCRM from '../CannedResponses/CannedResponsesCRM';
+import ConversationCardsCRM from '../AdaptiveCards/ConversationCardsCRM';
 
 
 const Panel2Tabs = () => {
@@ -16,7 +17,7 @@ const Panel2Tabs = () => {
       </TabList>
       <TabPanels>
         <TabPanel>
-          <></>
+          <ConversationCardsCRM />
         </TabPanel>
         <TabPanel>
           <CannedResponsesCRM />
