@@ -230,6 +230,9 @@
       },
       "message_drop_zone": {
         "enabled": false
+      },
+      "panel2_tabs": {
+        "enabled": false
       }
     }
   }
