@@ -1,5 +1,7 @@
-import { Tabs, Tab, TabList, TabPanel, Table } from '@twilio-paste/core';
+import { Tabs, Tab, TabList, TabPanel, Table, TabPanels } from '@twilio-paste/core';
 import { useUID } from '@twilio-paste/core/dist/uid-library';
+import CannedResponsesCRM from '../CannedResponses/CannedResponsesCRM';
+
 
 const Panel2Tabs = () => {
   const selectedId = useUID();
@@ -7,11 +9,19 @@ const Panel2Tabs = () => {
   return (
     <Tabs selectedId={selectedId} baseId='panel2-fitted-tabs' variant='fitted'>
       <TabList aria-label='Panel 2 tabs'>
-        <Tab>Cards</Tab>
+        <Tab id={selectedId}>Cards</Tab>
         <Tab>Responses</Tab>
-        <Tab>Segment</Tab>
+        <Tab>Profile</Tab>
         <Tab>Knowledge</Tab>
       </TabList>
+      <TabPanels>
+        <TabPanel>
+          <></>
+        </TabPanel>
+        <TabPanel>
+          <CannedResponsesCRM />
+        </TabPanel>
+      </TabPanels>
     </Tabs>
   )
 }
