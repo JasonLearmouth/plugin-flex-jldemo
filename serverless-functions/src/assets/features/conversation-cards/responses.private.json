@@ -1,5 +1,10 @@
 [
   {
+    "label": "Activate your card",
+    "text": "Activate your card online or by phone.",
+    "file": "activate_card.json"
+  },
+  {
     "label": "Appointment",
     "text": "Provide the user with task appointment details.",
     "file": "appointment.json"
@@ -15,6 +20,11 @@
     "file": "password_reset.json"
   },
   {
+    "label": "Credit Card Offer",
+    "text": "Credit card limit to $7,000 for credit cards with a limit of less than $5,000",
+    "file": "card_offer.json"
+  },
+  {
     "label": "Create Account (Owl Shoes)",
     "text": "Create a brand new account for first time users",
     "file": "create_account_owl_shoes.json"
@@ -25,10 +35,26 @@
     "file": "order_confirmation.json"
   },
   {
+    "label": "Disambiguate",
+    "text": "Disambiguate between two or more options",
+    "file": "disambiguate.json"
+  },
+  {
+    "label": "Disambiguate Stack",
+    "text": "Disambiguate between two or more options",
+    "file": "disambiguate2.json"
+  },
+  {
+    "label": "Manage Card Online",
+    "text": "Simple instructions to manage your card online",
+    "file": "manage_card_online.json"
+  },
+  {
     "label": "Proof of purchase",
     "text": "Form to request proof of purchase for a product or service",
     "file": "proof_of_purchase.json"
   },
+
   {
     "label": "Flight Update",
     "text": "Update on flight status for a user who has a flight booked",
