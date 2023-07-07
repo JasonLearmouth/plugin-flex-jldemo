@@ -62,7 +62,7 @@ export const handler: ServerlessFunctionSignature = async function (
     const segmentPayload = await result.json();
     if (!segmentPayload || segmentPayload.length == 0) callback(null, []);
 
-    response.setBody(segmentPayload as object);
+    response.setBody(segmentPayload.traits as object);
 
     callback(null, response);
   } catch (error: any) {

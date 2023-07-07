@@ -5,12 +5,12 @@ import {
   ProgressStepCurrent,
 } from '@twilio-paste/progress-steps';
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import SegmentService from '../../utils/SegmentService/SegmentService';
 import Moment from 'react-moment';
 import { EventResponse } from '../../types/Segment/EventResponse';
-import { Anchor, Box, Card, Heading, Paragraph, SkeletonLoader, Stack, Text } from '@twilio-paste/core';
+import { Box, SkeletonLoader, Stack } from '@twilio-paste/core';
 import { withTaskContext } from '@twilio/flex-ui';
 
 type Props = {
@@ -47,11 +47,13 @@ const EventTimeline = (props: Props) => {
 
   const timelineItem = (e: EventResponse) => {
     if (e.url)
-      <ProgressStepComplete as="a" href={e.url}>
-        <Moment fromNow>{e.timestamp}</Moment>
-        {' - '}
-        {e.title}
-      </ProgressStepComplete>;
+      return (
+        <ProgressStepCurrent as="a" href={e.url}>
+          <Moment fromNow>{e.timestamp}</Moment>
+          {' - '}
+          {e.title}
+        </ProgressStepCurrent>
+      );
 
     return (
       <ProgressStepComplete as="div">

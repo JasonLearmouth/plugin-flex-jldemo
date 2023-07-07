@@ -17,7 +17,10 @@ type TraitBadges = { value: string; variant: BadgeVariants };
 const makeBadges = (traits: any) => {
   const badges: TraitBadges[] = [];
 
+  console.log(`Evaluating traits`, traits);
+
   KnownTraits.forEach((item) => {
+    console.log(`Evaluating know trait against ${item.key} `);
     if (traits && traits.hasOwnProperty(item.key)) {
       if (item.display_value == true) {
         badges.push({
@@ -33,7 +36,7 @@ const makeBadges = (traits: any) => {
       }
     }
   });
-
+  console.log(`Total badges (traits) to display ${badges.length} `);
   return badges;
 };
 
@@ -68,8 +71,8 @@ const TraitTags = (props: Props) => {
 
   return (
     <Box display="flex" columnGap="space40" rowGap="space60" flexWrap="wrap">
-      {traitBadges?.map((badge) => (
-        <Badge as="span" variant={badge.variant}>
+      {traitBadges?.map((badge, idx: number) => (
+        <Badge as="span" variant={badge.variant} key={idx}>
           {badge.value}
         </Badge>
       ))}
