@@ -55,4 +55,6 @@ export type SegmentTraits = {
   animal?: string;
   favourite_colour?: string;
   music_preference?: string;
+  postcode?: string;
+  current_offer?: string;
 };
