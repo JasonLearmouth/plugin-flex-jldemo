@@ -6,7 +6,6 @@ import {
   ServerlessCallback,
   ServerlessFunctionSignature,
   ServerlessEventObject,
-  ServerlessEventObject,
 } from '@twilio-labs/serverless-runtime-types/types';
 
 import fetch from 'node-fetch';

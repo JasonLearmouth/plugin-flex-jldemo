@@ -1,23 +1,16 @@
 import {
-  Timeline,
-  TimelineItem,
-  TimelineOppositeContent,
-  TimelineSeparator,
-  TimelineDot,
-  TimelineConnector,
-  TimelineContent,
-} from '@material-ui/lab';
+  ProgressSteps,
+  ProgressStepComplete,
+  ProgressStepSeparator,
+  ProgressStepCurrent,
+} from '@twilio-paste/progress-steps';
 
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import SegmentService from '../../utils/SegmentService/SegmentService';
 import Moment from 'react-moment';
 import { EventResponse } from '../../types/Segment/EventResponse';
-import { Anchor, SkeletonLoader, Stack, Text } from '@twilio-paste/core';
-import { ProductAdminUsersIcon } from '@twilio-paste/icons/esm/ProductAdminUsersIcon';
-import { ProductAdminAccountsIcon } from '@twilio-paste/icons/esm/ProductAdminAccountsIcon';
-import { ProductAPIExplorerIcon } from '@twilio-paste/icons/esm/ProductAPIExplorerIcon';
-import { ProductInsightsIcon } from '@twilio-paste/icons/esm/ProductInsightsIcon';
+import { Anchor, Box, Card, Heading, Paragraph, SkeletonLoader, Stack, Text } from '@twilio-paste/core';
 import { withTaskContext } from '@twilio/flex-ui';
 
 type Props = {
@@ -32,7 +25,6 @@ const EventTimeline = (props: Props) => {
     console.log('EventTimeline props', props.task.attributes);
 
     async function getEvents() {
-      // const eventsObj = await getEventsForUser("00Q4Y0000023WEcUAM");
       if (props.task?.attributes?.email) {
         const eventsObj = await SegmentService.getEventsForUser(props.task.attributes.email);
         setSegmentEvents(eventsObj);
@@ -46,66 +38,44 @@ const EventTimeline = (props: Props) => {
   if (loading)
     return (
       <Stack orientation={'vertical'} spacing={'space70'}>
-        <SkeletonLoader />
-        <SkeletonLoader />
-        <SkeletonLoader />
-        <SkeletonLoader />
-        <SkeletonLoader />
-        <SkeletonLoader />
+        <SkeletonLoader key={1} />
+        <SkeletonLoader key={2} />
+        <SkeletonLoader key={3} />
       </Stack>
     );
   if (!segmentEvents) return <>No CDP events</>;
 
-  const timelineItems = segmentEvents.map((event: EventResponse) => {
+  const timelineItem = (e: EventResponse) => {
+    if (e.url)
+      <ProgressStepComplete as="a" href={e.url}>
+        <Moment fromNow>{e.timestamp}</Moment>
+        {' - '}
+        {e.title}
+      </ProgressStepComplete>;
+
     return (
-      <TimelineItem style={{ textAlign: 'left' }}>
-        <TimelineOppositeContent>
-          <Moment fromNow>{event.timestamp}</Moment>
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          {event.event.includes('Application') && (
-            <TimelineDot color="primary" variant="outlined">
-              <ProductAdminAccountsIcon decorative={true} />
-            </TimelineDot>
-          )}
+      <ProgressStepComplete as="div">
+        <Moment fromNow>{e.timestamp}</Moment>
+        {' - '}
+        {e.title}
+      </ProgressStepComplete>
+    );
+  };
 
-          {event.event.includes('Audience') && (
-            <TimelineDot color="primary" variant="outlined">
-              <ProductAdminUsersIcon decorative={true} />
-            </TimelineDot>
-          )}
-
-          {event.event.includes('Page') && (
-            <TimelineDot color="primary" variant="outlined">
-              <ProductAPIExplorerIcon decorative={true} />
-            </TimelineDot>
-          )}
-
-          {!event.event.includes('Application') &&
-            !event.event.includes('Audience') &&
-            !event.event.includes('Page') && (
-              <TimelineDot color="primary" variant="outlined">
-                <ProductInsightsIcon decorative={true} />
-              </TimelineDot>
-            )}
-
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent>
-          <Text as={'p'}>
-            <strong>{event.event}</strong>
-          </Text>
-          {event.url && (
-            <Anchor href={event.url} showExternal target="_blank">
-              {event.title}
-            </Anchor>
-          )}
-        </TimelineContent>
-      </TimelineItem>
+  const timelineItems = segmentEvents.map((event: EventResponse, idx: number) => {
+    return (
+      <div key={idx}>
+        <ProgressStepSeparator key={`sep-${idx}`} />
+        {timelineItem(event)}
+      </div>
     );
   });
 
-  return <Timeline>{timelineItems}</Timeline>;
+  return (
+    <Box overflow={'scroll'} height={'70vh'}>
+      <ProgressSteps orientation="vertical">{timelineItems}</ProgressSteps>
+    </Box>
+  );
 };
 
 export default withTaskContext(EventTimeline);

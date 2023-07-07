@@ -20,16 +20,13 @@ class SegmentService extends ApiService {
       };
 
       this.fetchJsonWithReject<SegmentTraits>(
-        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-traits`,
+        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-traits?` +
+          new URLSearchParams({ userId: userId }),
         {
-          method: 'POST',
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'X-twilio-flex-token': encodeURIComponent(this.manager.store.getState().flex.session.ssoTokenPayload.token),
           },
-          body: JSON.stringify({
-            userId: userId,
-          }),
         },
       )
         .then((response) => {
@@ -55,16 +52,13 @@ class SegmentService extends ApiService {
       };
 
       this.fetchJsonWithReject<EventResponse[]>(
-        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-events`,
+        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-events?` +
+          new URLSearchParams({ userId: userId }),
         {
-          method: 'POST',
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'X-twilio-flex-token': encodeURIComponent(this.manager.store.getState().flex.session.ssoTokenPayload.token),
           },
-          body: JSON.stringify({
-            userId: userId,
-          }),
         },
       )
         .then((response) => {
@@ -90,7 +84,6 @@ class SegmentService extends ApiService {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-twilio-flex-token': encodeURIComponent(this.manager.store.getState().flex.session.ssoTokenPayload.token),
           },
           body: JSON.stringify(data),
         },
