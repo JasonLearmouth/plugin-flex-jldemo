@@ -3,13 +3,14 @@ import { useUID } from '@twilio-paste/core/dist/uid-library';
 import CannedResponsesCRM from '../CannedResponses/CannedResponsesCRM';
 import ConversationCardsCRM from '../AdaptiveCards/ConversationCardsCRM';
 import Knowledge from '../Knowledge/Knowledge';
+import SegmentView from '../Segment/SegmentView';
 
 const Panel2Tabs = () => {
   const selectedId = useUID();
 
   return (
-    <Tabs selectedId={selectedId} baseId='panel2-fitted-tabs' variant='fitted'>
-      <TabList aria-label='Panel 2 tabs'>
+    <Tabs selectedId={selectedId} baseId="panel2-fitted-tabs" variant="fitted">
+      <TabList aria-label="Panel 2 tabs">
         <Tab id={selectedId}>Cards</Tab>
         <Tab>Responses</Tab>
         <Tab>Profile</Tab>
@@ -23,7 +24,7 @@ const Panel2Tabs = () => {
           <CannedResponsesCRM />
         </TabPanel>
         <TabPanel>
-          <></>
+          <SegmentView />
         </TabPanel>
         <TabPanel>
           <Knowledge />
@@ -34,3 +35,4 @@ const Panel2Tabs = () => {
 }
 
 export default Panel2Tabs;
+

@@ -28,7 +28,7 @@ const AdaptiveCardContainer: React.FunctionComponent<AdaptiveCardContainerProps>
     };
     const adaptiveCard = new AdaptiveCards.AdaptiveCard();
     adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(hostConfig);
-    adaptiveCard.parse(JSON.parse(attributes[ADAPTIVE_CARD_KEY_NAME]));
+    adaptiveCard.parse(attributes[ADAPTIVE_CARD_KEY_NAME]);
 
     // Provide an onExecuteAction handler to handle the Action.Submit
     adaptiveCard.onExecuteAction = (action: AdaptiveCards.Action) => {

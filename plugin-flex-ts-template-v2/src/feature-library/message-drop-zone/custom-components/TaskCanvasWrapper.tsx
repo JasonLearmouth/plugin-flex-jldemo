@@ -20,16 +20,16 @@ const Wrapper = (props: Props) => {
     if (!conversationSid || !body) return;
 
     // Get the adaptive card data if it exists
-    const cardDataJson = e.dataTransfer.getData('adaptive-card');
+    const cardData = e.dataTransfer.getData('adaptive-card');
 
-    if (cardDataJson && cardDataJson !== 'undefined') {
-      const cardDef = JSON.parse(cardDataJson);
+    if (cardData && cardData !== 'undefined') {
+      const cardDef = JSON.parse(cardData);
       console.log('Got a drop card:', cardDef);
       await Actions.invokeAction('SendMessage', {
         body,
         conversationSid,
         messageAttributes: {
-          'adaptive-card': cardDataJson,
+          'adaptive-card': cardDef,
         },
       });
     } else {
