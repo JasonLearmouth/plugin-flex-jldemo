@@ -31,7 +31,8 @@ const Panel2Tabs = () => {
         </TabPanel>
       </TabPanels>
     </Tabs>
-  );
-};
+  )
+}
 
 export default Panel2Tabs;
+
