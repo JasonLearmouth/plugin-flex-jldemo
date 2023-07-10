@@ -232,7 +232,8 @@
         "enabled": false
       },
       "panel2_tabs": {
-        "enabled": false
+        "enabled": false,
+        "searchUrl": ""
       }
     }
   }
