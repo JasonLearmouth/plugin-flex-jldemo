@@ -234,6 +234,9 @@
       "panel2_tabs": {
         "enabled": false,
         "searchUrl": ""
+      },
+      "ai_responses": {
+        "enabled": false
       }
     }
   }

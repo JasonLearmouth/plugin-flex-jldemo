@@ -29,6 +29,7 @@
     "axios": "^1.4.0",
     "lodash": "^4.17.21",
     "node-fetch": "2.6.7",
+    "openai": "^3.3.0",
     "randomstring": "^1.2.2",
     "twilio": "^4.11.0",
     "twilio-flex-token-validator": "^1.5.6"
