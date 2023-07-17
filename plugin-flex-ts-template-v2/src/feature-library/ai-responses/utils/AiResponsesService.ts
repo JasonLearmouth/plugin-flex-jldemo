@@ -11,11 +11,24 @@ class AiResponsesService extends ApiService {
     return result.result.choices[0].message.content;
   };
 
-  getEnhancedResponseWithPersona = async (message: string, persona_prompt: string): Promise<string> => {
+  getEnhancedResponseWithPersonaAndUserContext = async (
+    message: string,
+    persona_prompt: string,
+    user_context: string = '',
+  ): Promise<string> => {
+    if (user_context && user_context.length > 0) {
+      user_context =
+        'The user has the following known traits: ' + user_context + '. Only include traits if they help the user.';
+    }
+
+    let prompt = `You are an AI assistant. Your persona ${persona_prompt}. ${user_context}. Enhance this message, but keep it brief: `;
+
+    console.log(`PROMPT = ${prompt}`);
+
     const open_ai_request: OpenAIMessage[] = [];
     open_ai_request.push({
       role: 'system',
-      content: `You are an AI assistant. Your persona ${persona_prompt}. Enhance this message`,
+      content: prompt,
     });
     open_ai_request.push({ role: 'user', content: message });
     const result = await this.getOpenAIResponse(open_ai_request);

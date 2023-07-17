@@ -21,6 +21,14 @@ const personas: Array<Persona> = [
     prompt: 'is millennial',
   },
   {
+    name: 'Millennial speak 💥🐥',
+    prompt: 'is millennial that loves emojis',
+  },
+  {
+    name: 'Gen-Z',
+    prompt: 'is generation z',
+  },
+  {
     name: 'Researcher',
     prompt: 'is like a researcher',
   },
