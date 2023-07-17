@@ -5,13 +5,13 @@ import { SegmentTraits } from '../../types/Segment/SegmentTraits';
 import { EventResponse } from '../../types/Segment/EventResponse';
 
 class SegmentService extends ApiService {
-  traits: SegmentTraits | null = null;
-  events: EventResponse[] = [];
+  userTraitsCache: Record<string, SegmentTraits> = {};
+  userEventsCache: Record<string, EventResponse[]> = {};
 
   getTraitsForUser = async (userId: string): Promise<SegmentTraits> => {
     return new Promise((resolve, reject) => {
-      if (this.traits) {
-        resolve(this.traits);
+      if (this.userTraitsCache[userId]) {
+        resolve(this.userTraitsCache[userId]);
         return;
       }
 
@@ -30,7 +30,7 @@ class SegmentService extends ApiService {
         },
       )
         .then((response) => {
-          this.traits = response;
+          this.userTraitsCache[userId] = response;
           resolve(response);
         })
         .catch((error) => {
@@ -42,8 +42,8 @@ class SegmentService extends ApiService {
 
   getEventsForUser = async (userId: string): Promise<EventResponse[]> => {
     return new Promise((resolve, reject) => {
-      if (this.traits) {
-        resolve(this.events);
+      if (this.userEventsCache[userId]) {
+        resolve(this.userEventsCache[userId]);
         return;
       }
 
@@ -62,7 +62,7 @@ class SegmentService extends ApiService {
         },
       )
         .then((response) => {
-          this.events = response;
+          this.userEventsCache[userId] = response;
           resolve(response);
         })
         .catch((error) => {
@@ -89,7 +89,6 @@ class SegmentService extends ApiService {
         },
       )
         .then((response) => {
-          this.events = response;
           resolve(response);
         })
         .catch((error) => {

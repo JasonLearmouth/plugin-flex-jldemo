@@ -57,4 +57,5 @@ export type SegmentTraits = {
   music_preference?: string;
   postcode?: string;
   current_offer?: string;
+  destination_preference?: string;
 };

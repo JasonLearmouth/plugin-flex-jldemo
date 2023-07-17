@@ -111,4 +111,10 @@ export const KnownTraits: KnownTrait[] = [
     display_value: true,
     variant: 'success',
   },
+  {
+    key: 'destination_preference',
+    label: 'Destination Preference',
+    display_value: true,
+    variant: 'success',
+  },
 ];
