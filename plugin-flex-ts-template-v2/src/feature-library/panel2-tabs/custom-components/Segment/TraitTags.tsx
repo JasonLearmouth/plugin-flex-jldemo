@@ -41,7 +41,6 @@ const makeBadges = (traits: any) => {
 };
 
 const TraitTags = (props: Props) => {
-  const [traits, setTraits] = useState({} as SegmentTraits);
   const [loading, setLoading] = useState(true);
   const [traitBadges, setTraitBadges] = useState<TraitBadges[]>();
 
@@ -49,7 +48,6 @@ const TraitTags = (props: Props) => {
     async function getTraits() {
       if (props.task?.attributes?.email) {
         const traitsObj = await SegmentService.getTraitsForUser(props.task.attributes.email);
-        setTraits(traitsObj);
         setTraitBadges(makeBadges(traitsObj));
       }
       setLoading(false);
