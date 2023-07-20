@@ -8,7 +8,7 @@ class SegmentService extends ApiService {
   userTraitsCache: Record<string, SegmentTraits> = {};
   userEventsCache: Record<string, EventResponse[]> = {};
 
-  getTraitsForUser = async (userId: string): Promise<SegmentTraits> => {
+  fetchTraitsForUser = async (userId: string): Promise<SegmentTraits> => {
     return new Promise((resolve, reject) => {
       if (this.userTraitsCache[userId]) {
         resolve(this.userTraitsCache[userId]);
@@ -16,17 +16,16 @@ class SegmentService extends ApiService {
       }
 
       const encodedParams: EncodedParams = {
+        userId,
         Token: encodeURIComponent(this.manager.store.getState().flex.session.ssoTokenPayload.token),
       };
 
       this.fetchJsonWithReject<SegmentTraits>(
-        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-traits?` +
-          new URLSearchParams({ userId: userId }),
+        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-traits`,
         {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: this.buildBody(encodedParams),
         },
       )
         .then((response) => {
@@ -34,13 +33,13 @@ class SegmentService extends ApiService {
           resolve(response);
         })
         .catch((error) => {
-          console.error(`Error fetching traits for user\r\n`, error);
+          console.error(`Segment Service - Error fetching traits for user: \r\n`, error);
           reject(error);
         });
     });
   };
 
-  getEventsForUser = async (userId: string): Promise<EventResponse[]> => {
+  fetchEventsForUser = async (userId: string): Promise<EventResponse[]> => {
     return new Promise((resolve, reject) => {
       if (this.userEventsCache[userId]) {
         resolve(this.userEventsCache[userId]);
@@ -48,17 +47,16 @@ class SegmentService extends ApiService {
       }
 
       const encodedParams: EncodedParams = {
+        userId,
         Token: encodeURIComponent(this.manager.store.getState().flex.session.ssoTokenPayload.token),
       };
 
       this.fetchJsonWithReject<EventResponse[]>(
-        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-events?` +
-          new URLSearchParams({ userId: userId }),
+        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/get-events`,
         {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: this.buildBody(encodedParams),
         },
       )
         .then((response) => {

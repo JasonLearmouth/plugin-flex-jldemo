@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Stack, Badge, SkeletonLoader } from '@twilio-paste/core';
 
-import SegmentService from '../../utils/SegmentService/SegmentService';
-
 import { SegmentTraits } from '../../types/Segment/SegmentTraits';
-import { withTaskContext } from '@twilio/flex-ui';
 import { BadgeVariants } from '@twilio-paste/badge/dist/types';
 import { KnownTraits } from '../../flex-hooks/strings/segmentTraits';
 
-type Props = {
-  task?: any;
+type TraitTagsProps = {
+  traits: SegmentTraits;
+  loading: boolean;
 };
 
 type TraitBadges = { value: string; variant: BadgeVariants };
@@ -40,20 +38,12 @@ const makeBadges = (traits: any) => {
   return badges;
 };
 
-const TraitTags = (props: Props) => {
-  const [loading, setLoading] = useState(true);
+const TraitTags = ({ loading, traits }: TraitTagsProps) => {
   const [traitBadges, setTraitBadges] = useState<TraitBadges[]>();
 
   useEffect(() => {
-    async function getTraits() {
-      if (props.task?.attributes?.email) {
-        const traitsObj = await SegmentService.getTraitsForUser(props.task.attributes.email);
-        setTraitBadges(makeBadges(traitsObj));
-      }
-      setLoading(false);
-    }
-    getTraits();
-  }, []);
+    setTraitBadges(makeBadges(traits));
+  }, [traits]);
 
   if (loading)
     return (
@@ -67,6 +57,7 @@ const TraitTags = (props: Props) => {
       </Stack>
     );
 
+  if (!traitBadges || traitBadges.length === 0) return <>No traits found</>;
   return (
     <Box display="flex" columnGap="space40" rowGap="space60" flexWrap="wrap">
       {traitBadges?.map((badge, idx: number) => (
@@ -78,4 +69,4 @@ const TraitTags = (props: Props) => {
   );
 };
 
-export default withTaskContext(TraitTags);
+export default TraitTags;

@@ -4,11 +4,14 @@ import '@twilio-labs/serverless-runtime-types';
 import {
   Context,
   ServerlessCallback,
-  ServerlessFunctionSignature,
   ServerlessEventObject,
+  TwilioResponse,
 } from '@twilio-labs/serverless-runtime-types/types';
 
 import fetch from 'node-fetch';
+
+const { prepareFlexFunction } = require(Runtime.getFunctions()['common/helpers/function-helper'].path);
+const requiredParameters = ['userId'];
 
 type MyEvent = {
   From?: string;
@@ -22,53 +25,50 @@ export type EventResponse = {
   userAgent: string;
 };
 
-export type SegmentContext = {
-  SEGMENT_SPACEID?: string;
+export type MyContext = {
+  SEGMENT_SPACE_ID?: string;
   SEGMENT_BASE_URL?: string;
   SEGMENT_API_ACCESS_TOKEN?: string;
 };
 
-export const handler: ServerlessFunctionSignature = async function (
-  context: Context<SegmentContext>,
-  event: ServerlessEventObject<MyEvent>,
-  callback: ServerlessCallback,
-) {
-  const response = new Twilio.Response();
-  // Set the CORS headers to allow Flex to make an error-free HTTP request
-  // to this Function
-  response.appendHeader('Access-Control-Allow-Origin', '*');
-  response.appendHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-  response.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
-  response.appendHeader('Content-Type', 'application/json');
+exports.handler = prepareFlexFunction(
+  requiredParameters,
+  async (
+    context: Context<MyContext>,
+    event: ServerlessEventObject<MyEvent>,
+    callback: ServerlessCallback,
+    response: TwilioResponse,
+    handleError: (err: any) => void,
+  ) => {
+    try {
+      let token = Buffer.from(`${context.SEGMENT_API_ACCESS_TOKEN}:`, 'utf8').toString('base64');
+      const phone = encodeURIComponent(event.From || '').toLowerCase();
+      const url = `${context.SEGMENT_BASE_URL}/spaces/${context.SEGMENT_SPACE_ID}/collections/users/profiles/phone:${phone}/traits?limit=200`;
+      console.log(`Fetching segment Event Data from: ${url}`);
 
-  try {
-    let token = Buffer.from(`${context.SEGMENT_API_ACCESS_TOKEN}:`, 'utf8').toString('base64');
+      var options: any = {
+        method: 'GET',
+        headers: {
+          Authorization: `Basic ${token}`,
+        },
+      };
 
-    const phone = encodeURIComponent(event.From || '');
-    const url = `${context.SEGMENT_BASE_URL}/spaces/${context.SEGMENT_SPACEID}/collections/users/profiles/phone:${phone}/traits?limit=200`;
+      const result = await fetch(url, options);
+      const segmentPayload = await result.json();
 
-    console.log(`Fetching segment Trait Data from: ${url}`);
+      // console.log(JSON.stringify(segmentPayload, null, 2));
 
-    var options: any = {
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${token}`,
-      },
-    };
+      // Guard clause
+      if (!segmentPayload || !segmentPayload.hasOwnProperty('traits')) {
+        response.setBody([]);
+        callback(null, response);
+        return;
+      }
 
-    const result = await fetch(url, options);
-
-    if (!result) callback(null, []);
-    const segmentPayload = await result.json();
-    if (!segmentPayload || segmentPayload.length == 0) callback(null, []);
-
-    response.setBody(segmentPayload as object);
-
-    callback(null, response);
-  } catch (error: any) {
-    console.log(error);
-
-    response.setBody(error);
-    callback(response);
-  }
-};
+      response.setBody(segmentPayload.traits as object);
+      return callback(null, response);
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+);

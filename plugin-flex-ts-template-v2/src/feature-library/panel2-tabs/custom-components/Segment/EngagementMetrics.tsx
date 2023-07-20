@@ -1,36 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Stack, SkeletonLoader } from '@twilio-paste/core';
 import Typography from '@material-ui/core/Typography';
-import { withTaskContext } from '@twilio/flex-ui';
-import SegmentService from '../../utils/SegmentService/SegmentService';
 import { SegmentTraits } from '../../types/Segment/SegmentTraits';
 import Progress from './Progress';
 
-type Props = {
-  task?: any;
+type EngagementMetricsProps = {
+  traits: SegmentTraits;
+  loading: boolean;
 };
 
-const EngagementMetrics = (props: Props) => {
-  const [traits, setTraits] = useState({} as SegmentTraits);
-  const [digitalEngagmentRating, setDigitalEngagmentRating] = useState(0);
-  const [marketingEngagmentRating, setMarketingEngagmentRating] = useState(0);
-  const [loading, setLoading] = useState(true);
+const EngagementMetrics = ({ traits, loading }: EngagementMetricsProps) => {
+  const [digitalEngagementRating, setDigitalEngagementRating] = useState(0.75);
+  const [marketingEngagementRating, setMarketingEngagementRating] = useState(0.3);
 
   useEffect(() => {
-    async function getTraits() {
-      if (props.task?.attributes?.email) {
-        const traitsObj = await SegmentService.getTraitsForUser(props.task.attributes.email);
-        setTraits(traitsObj);
-        if (traitsObj && traitsObj.digital_engagement_score)
-          setDigitalEngagmentRating(traitsObj.digital_engagement_score as number);
-        if (traitsObj && traitsObj.marketing_engagement_score)
-          setMarketingEngagmentRating(traitsObj.marketing_engagement_score as number);
-        console.log('Traits', traitsObj);
-      }
-      setLoading(false);
-    }
-    getTraits();
-  }, []);
+    if (traits && Object.hasOwn(traits, 'digital_engagement_score'))
+      setDigitalEngagementRating(traits.digital_engagement_score as number);
+    if (traits && Object.hasOwn(traits, 'marketing_engagement_score'))
+      setMarketingEngagementRating(traits.marketing_engagement_score as number);
+  }, [traits]);
 
   if (loading)
     return (
@@ -48,14 +36,14 @@ const EngagementMetrics = (props: Props) => {
     <>
       <Box>
         <Typography component="legend">Digital Engagment</Typography>
-        <Progress value={digitalEngagmentRating * 100} />
+        <Progress value={digitalEngagementRating * 100} />
       </Box>
       <Box>
         <Typography component="legend">Marketing Engagment</Typography>
-        <Progress value={marketingEngagmentRating * 100} />
+        <Progress value={marketingEngagementRating * 100} />
       </Box>
     </>
   );
 };
 
-export default withTaskContext(EngagementMetrics);
+export default EngagementMetrics;

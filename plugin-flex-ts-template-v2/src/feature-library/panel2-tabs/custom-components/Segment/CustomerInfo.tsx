@@ -23,30 +23,15 @@ import { ThumbsUpIcon } from '@twilio-paste/icons/esm/ThumbsUpIcon';
 import { BusinessIcon } from '@twilio-paste/icons/esm/BusinessIcon';
 import { CommunityIcon } from '@twilio-paste/icons/esm/CommunityIcon';
 import { StarIcon } from '@twilio-paste/icons/esm/StarIcon';
-
-import SegmentService from '../../utils/SegmentService/SegmentService';
 import { SegmentTraits } from '../../types/Segment/SegmentTraits';
 import { withTaskContext } from '@twilio/flex-ui';
 
 type Props = {
-  task?: any;
+  traits: SegmentTraits;
+  loading: boolean;
 };
 
-const CustomerInfo = (props: Props) => {
-  const [traits, setTraits] = useState({} as SegmentTraits);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function getTraits() {
-      if (props.task?.attributes?.email) {
-        const traitsObj = await SegmentService.getTraitsForUser(props.task.attributes.email);
-        setTraits(traitsObj);
-      }
-      setLoading(false);
-    }
-    getTraits();
-  }, []);
-
+const CustomerInfo = ({ traits, loading }: Props) => {
   if (loading)
     return (
       <Card>

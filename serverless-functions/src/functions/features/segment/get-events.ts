@@ -4,11 +4,14 @@ import '@twilio-labs/serverless-runtime-types';
 import {
   Context,
   ServerlessCallback,
-  ServerlessFunctionSignature,
   ServerlessEventObject,
+  TwilioResponse,
 } from '@twilio-labs/serverless-runtime-types/types';
 
 import fetch from 'node-fetch';
+
+const { prepareFlexFunction } = require(Runtime.getFunctions()['common/helpers/function-helper'].path);
+const requiredParameters = ['userId'];
 
 type MyEvent = {
   userId?: string;
@@ -22,64 +25,63 @@ export type EventResponse = {
   userAgent: string;
 };
 
-export type SegmentContext = {
-  SEGMENT_SPACEID?: string;
+export type MyContext = {
+  SEGMENT_SPACE_ID?: string;
   SEGMENT_BASE_URL?: string;
   SEGMENT_API_ACCESS_TOKEN?: string;
 };
 
-export const handler: ServerlessFunctionSignature = async function (
-  context: Context<SegmentContext>,
-  event: ServerlessEventObject<MyEvent>,
-  callback: ServerlessCallback,
-) {
-  const response = new Twilio.Response();
-  // Set the CORS headers to allow Flex to make an error-free HTTP request
-  // to this Function
-  response.appendHeader('Access-Control-Allow-Origin', '*');
-  response.appendHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-  response.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
-  response.appendHeader('Content-Type', 'application/json');
+exports.handler = prepareFlexFunction(
+  requiredParameters,
+  async (
+    context: Context<MyContext>,
+    event: ServerlessEventObject<MyEvent>,
+    callback: ServerlessCallback,
+    response: TwilioResponse,
+    handleError: (err: any) => void,
+  ) => {
+    try {
+      let token = Buffer.from(`${context.SEGMENT_API_ACCESS_TOKEN}:`, 'utf8').toString('base64');
+      const email = encodeURIComponent(event.userId || '').toLowerCase();
+      const url = `${context.SEGMENT_BASE_URL}/spaces/${context.SEGMENT_SPACE_ID}/collections/users/profiles/email:${email}/events?limit=100`;
+      console.log(`Fetching segment Event Data from: ${url}`);
 
-  try {
-    let token = Buffer.from(`${context.SEGMENT_API_ACCESS_TOKEN}:`, 'utf8').toString('base64');
-    const email = encodeURIComponent(event.userId || '');
+      var options: any = {
+        method: 'GET',
+        headers: {
+          Authorization: `Basic ${token}`,
+        },
+      };
 
-    const url = `${context.SEGMENT_BASE_URL}/spaces/${context.SEGMENT_SPACEID}/collections/users/profiles/email:${email}/events?limit=100`;
+      const result = await fetch(url, options);
+      const segmentPayload = await result.json();
 
-    console.log(`Fetching segment Event Data from: ${url}`);
+      // console.log(JSON.stringify(segmentPayload, null, 2));
 
-    var options: any = {
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${token}`,
-      },
-    };
+      // Guard clause
+      if (!segmentPayload || !segmentPayload.data || segmentPayload.data.length <= 0) {
+        response.setBody([]);
+        callback(null, response);
+        return;
+      }
 
-    const result = await fetch(url, options);
+      const responseData: EventResponse[] = [];
 
-    const segmentPayload = await result.json();
-
-    const responseData: EventResponse[] = [];
-
-    if (!segmentPayload || !segmentPayload.data) callback(null, []);
-
-    segmentPayload.data.map((e: any) => {
-      // console.log(JSON.stringify(e, null, 2));
-      responseData.push({
-        timestamp: e.timestamp,
-        event: e.event,
-        title: e?.properties?.title || e.event || 'No title',
-        url: e?.context?.page?.url,
-        userAgent: e.context.userAgent,
+      segmentPayload.data.map((e: any) => {
+        // console.log(JSON.stringify(e, null, 2));
+        responseData.push({
+          timestamp: e.timestamp,
+          event: e.event,
+          title: e?.properties?.title || e.event || 'No title',
+          url: e?.context?.page?.url,
+          userAgent: e.context.userAgent,
+        });
       });
-    });
 
-    response.setBody(responseData);
-    callback(null, response);
-  } catch (error: any) {
-    console.log(error);
-    response.setBody(error);
-    callback(response);
-  }
-};
+      response.setBody(responseData);
+      return callback(null, response);
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+);

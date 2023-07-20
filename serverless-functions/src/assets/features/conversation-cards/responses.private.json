@@ -66,6 +66,11 @@
     "file": "stock_price.json"
   },
   {
+    "label": "Product Video (Classic)",
+    "text": "See Twilio Flex in action in this short video",
+    "file": "product_video_classic.json"
+  },
+  {
     "label": "Product Video (Flex)",
     "text": "See Twilio Flex in action in this short video",
     "file": "product_video_flex.json"

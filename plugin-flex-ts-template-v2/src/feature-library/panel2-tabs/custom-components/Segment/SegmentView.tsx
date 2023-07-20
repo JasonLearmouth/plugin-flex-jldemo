@@ -1,12 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Card, Column, Grid, Heading, Paragraph, Stack } from '@twilio-paste/core';
+import { withTaskContext } from '@twilio/flex-ui';
+
+import SegmentService from '../../utils/SegmentService/SegmentService';
+import { SegmentTraits } from '../../types/Segment/SegmentTraits';
+import { EventResponse } from '../../types/Segment/EventResponse';
 
 import EventTimeline from './EventTimeline';
 import FauxSuggestions from './FauxSuggestions';
 import EngagementMetrics from './EngagementMetrics';
 import TraitTags from './TraitTags';
 
-const SegmentView = () => {
+type SegmentViewProps = {
+  task?: any;
+};
+
+const SegmentView = (props: SegmentViewProps) => {
+  const [isLoadingTraits, setLoadingTraits] = useState(true);
+  const [isLoadingEvents, setLoadingEvents] = useState(true);
+  const [traits, setTraits] = useState<SegmentTraits>({});
+  const [events, setEvents] = useState<EventResponse[]>([]);
+
+  useEffect(() => {
+    setLoadingTraits(true);
+    setLoadingEvents(true);
+
+    SegmentService.fetchTraitsForUser(props.task.attributes.email)
+      .then((userTraits) => setTraits(userTraits))
+      .catch((err) => console.error('Segment view - Error fetching user traits', err))
+      .finally(() => setLoadingTraits(false));
+
+    const eventsObj = SegmentService.fetchEventsForUser(props.task.attributes.email)
+      .then((events) => setEvents(events))
+      .catch((err) => console.log('Segment view - Error getting events', err))
+      .finally(() => setLoadingEvents(false));
+  }, [props.task?.attributes?.email]);
+
   return (
     <Box as="main" padding="space70">
       <Grid gutter="space30">
@@ -18,7 +47,7 @@ const SegmentView = () => {
               <Heading as={'h2'} variant={'heading40'}>
                 CDP Traits
               </Heading>
-              <TraitTags />
+              <TraitTags loading={isLoadingTraits} traits={traits} />
             </Card>
 
             <Card padding="space70">
@@ -40,9 +69,8 @@ const SegmentView = () => {
               <Heading as={'h2'} variant={'heading40'}>
                 CDP Engagement Metrics
               </Heading>
-              <EngagementMetrics />
+              <EngagementMetrics loading={isLoadingTraits} traits={traits} />
             </Card>
-
             <Card padding="space70">
               <Heading as={'h2'} variant={'heading40'}>
                 Proactive Knowledge
@@ -58,7 +86,7 @@ const SegmentView = () => {
               <Heading as={'h2'} variant={'heading40'}>
                 CDP Event Timeline
               </Heading>
-              <EventTimeline />
+              <EventTimeline loading={isLoadingEvents} events={events} />
             </Card>
           </Stack>
         </Column>
@@ -67,4 +95,4 @@ const SegmentView = () => {
   );
 };
 
-export default SegmentView;
+export default withTaskContext(SegmentView);
