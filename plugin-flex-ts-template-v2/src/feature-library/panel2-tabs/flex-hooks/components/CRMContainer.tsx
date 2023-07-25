@@ -1,4 +1,5 @@
 import * as Flex from '@twilio/flex-ui';
+
 import { Panel2Tabs, Panel2VoiceTabs } from '../../custom-components/Panel2Tabs';
 import { FlexComponent } from '../../../../types/feature-loader';
 

@@ -201,10 +201,7 @@
         "per_queue": {
           "exampleQueueSid": {
             "require_disposition": true,
-            "dispositions": [
-              "Promotional Sale",
-              "Renewal"
-            ]
+            "dispositions": ["Promotional Sale", "Renewal"]
           }
         }
       },
@@ -237,6 +234,10 @@
       },
       "ai_responses": {
         "enabled": false
+      },
+      "virtual_agent_non_voice": {
+        "enabled": true,
+        "backendUrl": "https://dialogflow-voice-transcript-service-2920-dev.twil.io"
       }
     }
   }

@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { NewIcon } from '@twilio-paste/icons/esm/NewIcon';
 import { withTaskContext, TaskContextProps } from '@twilio/flex-ui';
-import { Button, Select, Option, Switch, Text, Flex as PasteFlex } from '@twilio-paste/core';
+import { Button, Select, Option, Switch, Text, Flex as PasteFlex, Box } from '@twilio-paste/core';
 
 import { ResponseEnhancerWrapper } from './ResponseEnhancerWrapperStyles';
 import AiResponsesService from '../../utils/AiResponsesService';
@@ -91,11 +91,13 @@ const EnhancedResponse: React.FunctionComponent<Props> = ({ task }) => {
     <ResponseEnhancerWrapper>
       <PasteFlex hAlignContent="center" vAlignContent="center" padding="space10">
         {makeSelectBetter()}
-        <Switch name="useTraits" value="traits" checked={traitsOn} onChange={() => setTraitsOn(!traitsOn)}>
-          <Text as={'p'} fontSize="fontSize20">
-            Traits
-          </Text>
-        </Switch>
+        <PasteFlex marginLeft={'space30'} marginRight={'space30'} vAlignContent={'center'} minWidth={'unset'}>
+          <Switch name="useTraits" value="traits" checked={traitsOn} onChange={() => setTraitsOn(!traitsOn)}>
+            <Text as={'p'} fontSize="fontSize20">
+              Traits
+            </Text>
+          </Switch>
+        </PasteFlex>
         <Button onClick={rephraseResponse} size="circle" variant="secondary_icon" loading={loading}>
           <NewIcon decorative={false} title="Rephrase" />
         </Button>

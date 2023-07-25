@@ -30,7 +30,7 @@ const SegmentView = (props: SegmentViewProps) => {
       .catch((err) => console.error('Segment view - Error fetching user traits', err))
       .finally(() => setLoadingTraits(false));
 
-    const eventsObj = SegmentService.fetchEventsForUser(props.task.attributes.email)
+    SegmentService.fetchEventsForUser(props.task.attributes.email)
       .then((events) => setEvents(events))
       .catch((err) => console.log('Segment view - Error getting events', err))
       .finally(() => setLoadingEvents(false));

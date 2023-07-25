@@ -1,13 +1,18 @@
 {
+  "insights": {
+    "analyticsUrl": "http://localhost:8081"
+  },
   "custom_data": {
     "serverless_functions_domain": "<PLACEHOLDER_SERVERLESS_DOMAIN>",
     "features": {
       "activity_skill_filter": {
-        "rules": {
-        }
+        "rules": {}
       },
       "schedule_manager": {
         "serverless_domain": "<PLACEHOLDER_SCHEDULE_MANAGER_DOMAIN>"
+      },
+      "virtual-agent-non-voice": {
+        "backendUrl": "https://dialogflow-voice-transcript-service-2920-dev.twil.io"
       }
     }
   }
