@@ -13,6 +13,9 @@
       },
       "virtual-agent-non-voice": {
         "backendUrl": "https://dialogflow-voice-transcript-service-2920-dev.twil.io"
+      },
+      "chat_to_video_escalation": {
+        "enabled": true
       }
     }
   }
