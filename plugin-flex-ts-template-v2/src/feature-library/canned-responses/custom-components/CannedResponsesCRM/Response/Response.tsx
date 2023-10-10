@@ -50,8 +50,19 @@ const Response: React.FunctionComponent<ResponseProps> = ({ text, task }) => {
     });
   };
 
+  const onDragStart = ((e: any) => {
+    console.log("i'm getting dragged", e);
+    e.dataTransfer?.clearData();
+    e.dataTransfer?.setData("text/plain", parsedText);
+    e.dataTransfer?.setData("adaptive-card", JSON.stringify({ card: "card" }));
+  });
+
+  const onDragEnd = ((e: any) => {
+    console.log("dragging ended", e);
+  })
+
   return (
-    <Tr>
+    <Tr draggable onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <Td>
         <Text as="p" color="colorText" marginBottom="space10" marginTop="space10">
           {parsedText}

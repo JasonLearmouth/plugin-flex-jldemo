@@ -1,0 +1,39 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.Submit",
+          "title": "I want to talk to Chris",
+          "data": {
+            "text": "I want to talk to Chris"
+          },
+          "style": "positive"
+        }
+      ],
+      "horizontalAlignment": "Center",
+      "spacing": "None"
+    },
+    {
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.Submit",
+          "title": "I want try a self service bot",
+          "data": {
+            "text": "I want try a self service bot"
+          }
+        }
+      ],
+      "horizontalAlignment": "Center"
+    }
+  ],
+  "verticalContentAlignment": "Center",
+  "selectAction": {
+    "type": "Action.Submit"
+  }
+}

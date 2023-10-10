@@ -12,6 +12,7 @@ export enum FlexComponent {
   SideNav = 'SideNav',
   TaskCanvasHeader = 'TaskCanvasHeader',
   TaskCanvasTabs = 'TaskCanvasTabs',
+  TaskCanvas = 'TaskCanvas',
   TaskListButtons = 'TaskListButtons',
   TaskOverviewCanvas = 'TaskOverviewCanvas',
   TeamsView = 'TeamsView',
