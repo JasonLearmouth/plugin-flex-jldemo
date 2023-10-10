@@ -1,3 +1,9 @@
+import esES from './es-es.json';
+import esMX from './es-mx.json';
+import ptBR from './pt-br.json';
+import th from './th.json';
+import zhHans from './zh-hans.json';
+
 export enum StringTemplates {
   ADMIN_TITLE = 'PSAdminTitle',
   CONFIG_FOR_TITLE = 'PSAdminConfigForTitle',
@@ -18,6 +24,8 @@ export enum StringTemplates {
   UPDATED_MODAL_DESC = 'PSAdminUpdatedModalDesc',
   UPDATED_MODAL_RELOAD = 'PSAdminUpdatedModalReload',
   SAVE_DISABLED = 'PSAdminSaveDisabled',
+  EDIT_COMMON_SETTINGS = 'PSAdminEditCommonSettings',
+  MISSING_SETTINGS = 'PSAdminMissingSettings',
 }
 
 export const stringHook = () => ({
@@ -42,5 +50,13 @@ export const stringHook = () => ({
       'Another user has updated global settings. Click "Reload" to refresh the view with the updated settings. Saving global settings will be unavailable until the view is reloaded.',
     [StringTemplates.UPDATED_MODAL_RELOAD]: 'Reload',
     [StringTemplates.SAVE_DISABLED]: 'Saving global settings is unavailable until the view is reloaded.',
+    [StringTemplates.EDIT_COMMON_SETTINGS]: 'Edit common settings',
+    [StringTemplates.MISSING_SETTINGS]:
+      'No settings were found. This could be due to them being removed or not yet deployed.',
   },
+  'es-MX': esMX,
+  'pt-BR': ptBR,
+  th,
+  'zh-Hans': zhHans,
+  'es-ES': esES,
 });

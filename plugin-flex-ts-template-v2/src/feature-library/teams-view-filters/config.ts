@@ -1,13 +1,10 @@
 import { getFeatureFlags } from '../../utils/configuration';
 import TeamViewFiltersConfig from './types/ServiceConfiguration';
 
+const { enabled = false, log_filters = false } =
+  (getFeatureFlags().features?.teams_view_filters as TeamViewFiltersConfig) || {};
 const {
-  enabled = false,
-  log_filters = false,
-  department_options = [],
-  team_options = [],
-} = (getFeatureFlags().features?.teams_view_filters as TeamViewFiltersConfig) || {};
-const {
+  activities = true,
   email = false,
   department = false,
   queue_no_worker_data = false,
@@ -15,6 +12,7 @@ const {
   team = false,
   agent_skills = false,
 } = getFeatureFlags().features?.teams_view_filters?.applied_filters || {};
+const { teams = [], departments = [] } = getFeatureFlags().common || {};
 
 export const isFeatureEnabled = () => {
   return enabled;
@@ -22,6 +20,10 @@ export const isFeatureEnabled = () => {
 
 export const shouldLogFilters = () => {
   return enabled && log_filters;
+};
+
+export const isActivitiesFilterEnabled = () => {
+  return enabled && activities;
 };
 
 export const isEmailFilterEnabled = () => {
@@ -49,9 +51,9 @@ export const isAgentSkillsFilterEnabled = () => {
 };
 
 export const getDepartmentOptions = () => {
-  return department_options;
+  return departments;
 };
 
 export const getTeamOptions = () => {
-  return team_options;
+  return teams;
 };

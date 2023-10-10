@@ -1,4 +1,5 @@
 const { isString, isObject } = require('lodash');
+const axios = require('axios');
 
 const retryHandler = require(Runtime.getFunctions()['common/helpers/retry-handler'].path).retryHandler;
 
@@ -204,5 +205,94 @@ exports.fetchVoiceQueue = async (parameters) => {
     return { success: true, queueProperties, status: 200 };
   } catch (error) {
     return retryHandler(error, parameters, exports.fetchVoiceQueue);
+  }
+};
+
+/**
+ * @param {object} parameters the parameters for the function
+ * @param {number} parameters.attempts the number of retry attempts performed
+ * @param {object} parameters.context the context from calling lambda function
+ * @param {string} parameters.recordingSid the unique recording SID to fetch
+ * @returns {Map} The given recording's properties
+ * @description fetches the given recording SID's properties
+ */
+exports.fetchRecording = async (parameters) => {
+  const { context, recordingSid } = parameters;
+
+  if (!isObject(context)) throw new Error('Invalid parameters object passed. Parameters must contain context object');
+  if (!isString(recordingSid))
+    throw new Error('Invalid parameters object passed. Parameters must contain recordingSid string');
+
+  try {
+    const client = context.getTwilioClient();
+
+    const recordingProperties = await client.recordings(recordingSid).fetch();
+
+    return { success: true, recordingProperties, status: 200 };
+  } catch (error) {
+    return retryHandler(error, parameters, exports.fetchRecording);
+  }
+};
+
+/**
+ * @param {object} parameters the parameters for the function
+ * @param {number} parameters.attempts the number of retry attempts performed
+ * @param {object} parameters.context the context from calling lambda function
+ * @param {string} parameters.recordingSid the recording sid to fetch
+ * @returns {object} the recording audio file encoded as base64
+ * @description fetches recording by sid
+ */
+exports.fetchRecordingMedia = async (parameters) => {
+  const { recordingSid } = parameters;
+
+  if (!isString(recordingSid))
+    throw new Error('Invalid parameters object passed. Parameters must contain recordingSid string');
+
+  try {
+    const config = {
+      auth: {
+        username: process.env.ACCOUNT_SID,
+        password: process.env.AUTH_TOKEN,
+      },
+      responseType: 'arraybuffer',
+    };
+
+    const getResponse = await axios.get(
+      `https://api.twilio.com/2010-04-01/Accounts/${process.env.ACCOUNT_SID}/Recordings/${recordingSid}.mp3`,
+      config,
+    );
+
+    return {
+      success: true,
+      status: 200,
+      recording: getResponse?.data.toString('base64' ?? ''),
+      type: getResponse?.headers['content-type'],
+    };
+  } catch (error) {
+    return retryHandler(error, parameters, exports.fetchRecordingMedia);
+  }
+};
+
+/**
+ * @param {object} parameters the parameters for the function
+ * @param {number} parameters.attempts the number of retry attempts performed
+ * @param {object} parameters.context the context from calling lambda function
+ * @returns {Array<PhoneNumber>} An array of outbound caller ids for the account
+ * @description the following method is used to robustly retrieve
+ *   the outbound caller ids for the account
+ */
+exports.listOutgoingCallerIds = async function listOutgoingCallerIds(parameters) {
+  if (!isObject(parameters.context))
+    throw new Error('Invalid parameters object passed. Parameters must contain context object');
+
+  try {
+    const client = parameters.context.getTwilioClient();
+    const callerIds = await client.outgoingCallerIds.list({
+      limit: 1000,
+    });
+
+    return { success: true, callerIds, status: 200 };
+  } catch (error) {
+    return retryHandler(error, parameters, exports.listOutgoingCallerIds);
   }
 };

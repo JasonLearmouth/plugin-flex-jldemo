@@ -39,15 +39,26 @@ exports.retryHandler = async (error, parameters, callback) => {
   const retryAttemptsMessage = attempts === 1 ? `${attempts} retry attempt` : `${attempts} retry attempts`;
   const message = errorMessage ? errorMessage : error;
 
+  // Perform retries only on retry-able response status codes
+  // 412: Received upon ETag conflict; retry without delay
+  // 429: Rate limited; retry with delay
+  // 503: Internal error; retry with delay
+  // ECONNRESET: Connection reset by peer
+  // ETIMEDOUT: Operation timed out
   if (
-    (status === 412 || status === 429 || status === 503) &&
+    (status === 412 ||
+      status === 429 ||
+      status === 503 ||
+      twilioErrorCode === 'ECONNRESET' ||
+      twilioErrorCode === 'ETIMEDOUT') &&
     isNumber(attempts) &&
     attempts < TWILIO_SERVICE_RETRY_LIMIT
   ) {
     console.warn(
       `retrying ${context.PATH}.${callback.name}() after ${retryAttemptsMessage}, http-status-code: ${status}`,
     );
-    if (status === 429 || status === 503) await snooze(random(TWILIO_SERVICE_MIN_BACKOFF, TWILIO_SERVICE_MAX_BACKOFF));
+    if (status === 429 || status === 503 || twilioErrorCode === 'ECONNRESET' || twilioErrorCode === 'ETIMEDOUT')
+      await snooze(random(TWILIO_SERVICE_MIN_BACKOFF, TWILIO_SERVICE_MAX_BACKOFF));
 
     const updatedAttempts = attempts + 1;
     const updatedParameters = { ...parameters, attempts: updatedAttempts };

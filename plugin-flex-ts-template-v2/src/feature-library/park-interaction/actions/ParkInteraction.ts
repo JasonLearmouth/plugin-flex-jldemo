@@ -1,8 +1,8 @@
-import { TaskHelper, Notifications, templates } from '@twilio/flex-ui';
+import { TaskHelper, Notifications, templates, Manager } from '@twilio/flex-ui';
 
-import { ParkInteractionNotification } from '../flex-hooks/notifications';
+import { ParkInteractionNotification, UnparkInteractionNotification } from '../flex-hooks/notifications';
 import { StringTemplates } from '../flex-hooks/strings';
-import ParkInteractionPayload from '../types/ParkInteractionPayload';
+import ParkInteractionPayload, { UnparkInteractionPayload } from '../types/ParkInteractionPayload';
 import ParkInteractionService from '../utils/ParkInteractionService';
 
 const getAgent = async (payload: ParkInteractionPayload) => {
@@ -34,6 +34,7 @@ export const parkInteraction = async (payload: ParkInteractionPayload) => {
       agent.interactionSid,
       agent.participantSid,
       agent.mediaProperties.conversationSid,
+      agent.channelType,
       payload.task.taskSid,
       payload.task.workflowSid,
       payload.task.taskChannelUniqueName,
@@ -43,6 +44,20 @@ export const parkInteraction = async (payload: ParkInteractionPayload) => {
     );
 
     Notifications.dismissNotificationById(ParkInteractionNotification.ParkError);
+
+    setTimeout(() => {
+      // Work around a Flex bug where a CONVERSATION_UPDATE happens after CONVERSATION_UNLOAD,
+      // which results in the conversation not loading until Flex UI is reloaded
+      Manager.getInstance().store.dispatch({
+        type: 'CONVERSATION_UNLOAD',
+        payload: {},
+        meta: {
+          conversationSid: agent.mediaProperties.conversationSid,
+          channelSid: agent.mediaProperties.conversationSid,
+        },
+      });
+    }, 2000);
+
     return Notifications.showNotification(ParkInteractionNotification.ParkSuccess);
   } catch (error) {
     let message = (error as any)?.message;
@@ -53,6 +68,20 @@ export const parkInteraction = async (payload: ParkInteractionPayload) => {
     }
 
     return Notifications.showNotification(ParkInteractionNotification.ParkError, {
+      message,
+    });
+  }
+};
+
+export const unparkInteraction = async (payload: UnparkInteractionPayload) => {
+  try {
+    await ParkInteractionService.unparkInteraction(payload.ConversationSid, payload.WebhookSid);
+    return Notifications.showNotification(UnparkInteractionNotification.UnparkSuccess);
+  } catch (error) {
+    const message = (error as any)?.message;
+    console.log(message);
+    if (message.status === 400) return Notifications.showNotification(UnparkInteractionNotification.UnparkError);
+    return Notifications.showNotification(UnparkInteractionNotification.UnparkError, {
       message,
     });
   }

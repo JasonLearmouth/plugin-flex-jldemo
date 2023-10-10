@@ -1,3 +1,9 @@
+import esES from './es-es.json';
+import esMX from './es-mx.json';
+import ptBR from './pt-br.json';
+import th from './th.json';
+import zhHans from './zh-hans.json';
+
 // Export the template names as an enum for better maintainability when accessing them elsewhere
 export enum StringTemplates {
   ErrorParsingQueueExpression = 'QueueFilterParseNotification',
@@ -13,6 +19,7 @@ export enum StringTemplates {
   EmailAddress = 'PSTeamsViewEmailAddress',
   QueueEligibility = 'PSTeamsViewQueueEligibility',
   Team = 'PSTeamsViewTeam',
+  Activities = 'PSTeamsViewActivities',
 }
 
 export const stringHook = () => ({
@@ -31,5 +38,11 @@ export const stringHook = () => ({
     [StringTemplates.EmailAddress]: 'Email Address',
     [StringTemplates.QueueEligibility]: 'Queue Eligibility',
     [StringTemplates.Team]: 'Team',
+    [StringTemplates.Activities]: 'Activities',
   },
+  'es-ES': esES,
+  'es-MX': esMX,
+  'pt-BR': ptBR,
+  th,
+  'zh-Hans': zhHans,
 });

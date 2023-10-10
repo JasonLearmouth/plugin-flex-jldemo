@@ -1,3 +1,9 @@
+import esES from './es-es.json';
+import esMX from './es-mx.json';
+import ptBR from './pt-br.json';
+import th from './th.json';
+import zhHans from './zh-hans.json';
+
 export enum StringTemplates {
   SCHEDULE_MANAGER_TITLE = 'SchMgrTitle',
   PUBLISH_ABORTED = 'SchMgrPublishAborted',
@@ -211,4 +217,9 @@ export const stringHook = () => ({
     [StringTemplates.START_DATE]: 'Start date',
     [StringTemplates.END_DATE]: 'End date',
   },
+  'es-MX': esMX,
+  'pt-BR': ptBR,
+  th,
+  'zh-Hans': zhHans,
+  'es-ES': esES,
 });

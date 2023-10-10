@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Flex, Text } from '@twilio-paste/core';
-import { Template, templates } from '@twilio/flex-ui';
+import { Template, templates, useFlexSelector } from '@twilio/flex-ui';
+import { useSelector } from 'react-redux';
 
-import { getPendingActivity } from '../../helpers/pendingActivity';
-import WorkerActivity from '../../helpers/workerActivityHelper';
 import { StringTemplates } from '../../flex-hooks/strings/ActivityReservationHandler';
+import AppState from '../../../../types/manager/AppState';
+import { reduxNamespace } from '../../../../utils/state';
+import { ActivityReservationHandlerState } from '../../flex-hooks/reducers/ActivityReservationHandler';
 
 const PendingActivity = () => {
-  const [clock, setClock] = useState(true);
-  const [pendingActivity, setPendingActivity] = useState(getPendingActivity());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setClock((currentClock) => !currentClock);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    setPendingActivity(getPendingActivity());
-  }, [clock]);
+  const { pendingActivity } = useSelector(
+    (state: AppState) => state[reduxNamespace].activityReservationHandler as ActivityReservationHandlerState,
+  );
+  const { activity: currentActivity } = useFlexSelector((state: AppState) => state.flex.worker);
 
   return (
     <>
-      {pendingActivity && pendingActivity.name && WorkerActivity.activitySid !== pendingActivity.sid && (
+      {pendingActivity && pendingActivity.name !== currentActivity.name && (
         <Flex vertical marginRight="space20" hAlignContent="center">
           <Text as="p" color="colorTextInverse" fontSize="fontSize20" fontWeight="fontWeightBold">
             <Template source={templates[StringTemplates.PendingActivity]} />
