@@ -1,4 +1,4 @@
 {
-  "assetsFolder": "./src/assets",
-  "functionsFolder": "./src/functions"
+  "assetsFolder": "./dist/assets",
+  "functionsFolder": "./dist/functions"
 }

@@ -25,16 +25,16 @@ const SegmentView = (props: SegmentViewProps) => {
     setLoadingTraits(true);
     setLoadingEvents(true);
 
-    SegmentService.fetchTraitsForUser(props.task.attributes.email)
+    SegmentService.fetchTraitsForUser(props.task.attributes.email || props.task.attributes?.customers?.email)
       .then((userTraits) => setTraits(userTraits))
       .catch((err) => console.error('Segment view - Error fetching user traits', err))
       .finally(() => setLoadingTraits(false));
 
-    SegmentService.fetchEventsForUser(props.task.attributes.email)
+    SegmentService.fetchEventsForUser(props.task.attributes.email || props.task.attributes?.customers?.email)
       .then((events) => setEvents(events))
       .catch((err) => console.log('Segment view - Error getting events', err))
       .finally(() => setLoadingEvents(false));
-  }, [props.task?.attributes?.email]);
+  }, [props.task?.attributes?.email, props.task?.attributes?.customers?.email]);
 
   return (
     <Box as="main" padding="space70">
