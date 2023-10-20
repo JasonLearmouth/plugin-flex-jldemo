@@ -24,13 +24,16 @@ exports.handler = prepareFlexFunction(requiredParameters, async (context, event,
       charset: 'alphanumeric',
     });
 
-    const roomResult = await VideoOperations.createRoom({
+    const roomPayload = {
       context,
       recordParticipantsOnConnect: context.VIDEO_RECORD_BY_DEFAULT === 'true',
       type: context.VIDEO_ROOM_TYPE,
       emptyRoomTimeout: Number(context.VIDEO_CODE_TTL),
       uniqueName,
-    });
+    };
+
+    console.log('Creating room with payload', roomPayload);
+    const roomResult = await VideoOperations.createRoom(roomPayload);
 
     const attributesUpdate = {
       videoRoom: uniqueName,
