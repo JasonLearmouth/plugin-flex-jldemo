@@ -16,6 +16,9 @@
       },
       "chat_to_video_escalation": {
         "enabled": true
+      },
+      "inside_servicenow": {
+        "enabled": true
       }
     }
   }

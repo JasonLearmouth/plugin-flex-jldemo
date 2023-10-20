@@ -7,12 +7,7 @@
   "custom_data": {
     "common": {
       "log_level": "info",
-      "teams": [
-        "Blue Team",
-        "Red Team",
-        "Gold Team",
-        "VIP Team"
-      ],
+      "teams": ["Blue Team", "Red Team", "Gold Team", "VIP Team"],
       "departments": [
         "General Management",
         "Marketing",
@@ -216,7 +211,13 @@
         "enabled": true,
         "enable_notes": true,
         "require_disposition": false,
-        "global_dispositions": ["Resolved", "Not Resolved", "Follow-up Required", "Escalation", "Wrong Department"],
+        "global_dispositions": [
+          "Resolved",
+          "Not Resolved",
+          "Follow-up Required",
+          "Escalation",
+          "Wrong Department"
+        ],
         "per_queue": {
           "exampleQueueSid": {
             "require_disposition": true,
@@ -366,6 +367,12 @@
       "virtual_agent_non_voice": {
         "enabled": true,
         "backendUrl": "https://dialogflow-voice-transcript-service-2920-dev.twil.io"
+      },
+      "inside_servicenow": {
+        "enabled": false
+      },
+      "video_invite_card": {
+        "enabled": true
       }
     }
   }
