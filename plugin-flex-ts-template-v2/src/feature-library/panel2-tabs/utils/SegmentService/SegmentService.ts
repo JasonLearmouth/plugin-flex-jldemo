@@ -77,7 +77,7 @@ class SegmentService extends ApiService {
       };
 
       this.fetchJsonWithReject<EventResponse[]>(
-        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/send-events`,
+        `${this.serverlessProtocol}://${this.serverlessDomain}/features/segment/send-event`,
         {
           method: 'POST',
           headers: {
