@@ -1,29 +1,28 @@
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 const { prepareFlexFunction } = require(Runtime.getFunctions()['common/helpers/function-helper'].path);
 const requiredParameters = ['open_ai_request'];
 
 exports.handler = prepareFlexFunction(requiredParameters, async (context, event, callback, response, handleError) => {
   try {
-    const openAiConfiguration = new Configuration({
+    const openai = new OpenAI({
       apiKey: context.OPENAI_API_KEY,
     });
 
-    const openaiClient = new OpenAIApi(openAiConfiguration);
+    console.log(`Open AI using model ${context.OPENAI_MODEL}`);
 
-    console.log(`Open AI Key ${context.OPENAI_API_KEY} with model ${context.OPENAI_MODEL}`);
-
-    const completion = await openaiClient.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: context.OPENAI_MODEL,
       messages: event.open_ai_request,
       max_tokens: 500,
     });
 
-    console.log('Open AI response', completion.data);
+    // console.log('Open AI response', completion);
     response.setStatusCode(200);
-    response.setBody({ result: completion.data });
+    response.setBody({ result: completion });
 
     return callback(null, response);
   } catch (error) {
+    console.log(error);
     return handleError(error);
   }
 });
