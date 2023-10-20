@@ -1,3 +1,3 @@
 module.exports = {
-  basePath: "/features/chat-to-video-escalation",
+  basePath: "/features/video-invite-card",
 };

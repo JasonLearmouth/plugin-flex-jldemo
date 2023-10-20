@@ -1,14 +1,18 @@
 import { useQuery } from "react-query";
 import axios from "axios";
 
-const BACKEND_URL = `http${process.env.NEXT_PUBLIC_SERVERLESS_FUNCTIONS_DOMAIN?.startsWith('localhost') ? '' : 's'}://${process.env.NEXT_PUBLIC_SERVERLESS_FUNCTIONS_DOMAIN}`;
+const BACKEND_URL = `http${
+  process.env.NEXT_PUBLIC_SERVERLESS_FUNCTIONS_DOMAIN?.startsWith("localhost")
+    ? ""
+    : "s"
+}://${process.env.NEXT_PUBLIC_SERVERLESS_FUNCTIONS_DOMAIN}`;
 
 export const getAccessToken = async (
   roomName: string | undefined,
   identity?: string | undefined
 ) => {
   const { data } = await axios.get(
-    `${BACKEND_URL}/features/chat-to-video-escalation/common/client-get-token?roomName=${roomName}&identity=${identity}`
+    `${BACKEND_URL}/features/video-invite-card/common/client-get-token?roomName=${roomName}&identity=${identity}`
   );
   return data;
 };
